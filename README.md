@@ -5,12 +5,14 @@
 
 🔗 เว็บไซต์จริง  
 [https://wiweksikkaram.thekrist.com](https://wiweksikkaram.thekrist.com)
+[https://pocketbase-1123769174548283440.rcf2.deploys.app](https://pocketbase-1123769174548283440.rcf2.deploys.app)
 
 ---
 
 ## เทคโนโลยีที่ใช้
 
 - **SvelteKit** – Framework หลัก
+- **Pocketbase** – Database
 - **DaisyUI + Tailwind CSS** – จัดการ UI และ theme
 - **Cloudflare Workers** – Runtime และ deployment
 - **TypeScript** – ลดดราม่า runtime

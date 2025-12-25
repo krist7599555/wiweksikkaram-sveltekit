@@ -46,6 +46,7 @@
         "zx": "^8.8.5"
     },
     "dependencies": {
+        "pocketbase": "^0.26.5",
         "ts-pattern": "^5.9.0"
     }
 }
