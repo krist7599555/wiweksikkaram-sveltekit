@@ -1,13 +1,21 @@
 {
-	"$schema": "./node_modules/wrangler/config-schema.json",
-	"name": "wiweksikkaram-sveltekit",
-	"compatibility_date": "2025-12-25",
-	"compatibility_flags": ["nodejs_als"],
-	"main": ".svelte-kit/cloudflare/_worker.js",
-	"assets": {
-		"binding": "ASSETS",
-		"directory": ".svelte-kit/cloudflare"
-	},
-	"workers_dev": true,
-	"preview_urls": true
+    "$schema": "./node_modules/wrangler/config-schema.json",
+    "name": "wiweksikkaram-sveltekit",
+    "compatibility_date": "2025-12-25",
+    "compatibility_flags": ["nodejs_als"],
+    "main": ".svelte-kit/cloudflare/_worker.js",
+    "assets": {
+        "binding": "ASSETS",
+        "directory": ".svelte-kit/cloudflare"
+    },
+    "workers_dev": true,
+    "preview_urls": true,
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "wiweksikkaram",
+            "database_id": "48e75fb2-5264-4ff7-8a2a-5c5b1b579fc0",
+            "remote": true
+        }
+    ]
 }

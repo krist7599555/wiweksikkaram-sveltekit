@@ -1,38 +1,40 @@
-# sv
+# วิเวกสิกขาราม (Wiweksikkaram)
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+เว็บไซต์วิเวกสิกขาราม พัฒนาโดยใช้ **SvelteKit** และ deploy บน **Cloudflare Workers**  
+โฟกัสที่ความเร็ว ความเรียบง่าย และโครงสร้างที่ดูแลต่อได้จริง ไม่ใช่เว็บโชว์ของแล้วทิ้ง
 
-## Creating a project
+🔗 เว็บไซต์จริง  
+https://wiweksikkaram-sveltekit.krist7599555.workers.dev
 
-If you're seeing this, you've probably already done this step. Congrats!
+---
 
-```sh
-# create a new project in the current directory
-npx sv create
+## เทคโนโลยีที่ใช้
 
-# create a new project in my-app
-npx sv create my-app
+- **SvelteKit** – Framework หลัก
+- **DaisyUI + Tailwind CSS** – จัดการ UI และ theme
+- **Cloudflare Workers** – Runtime และ deployment
+- **TypeScript** – ลดดราม่า runtime
+- **Valibot** – schema / validation (ถ้ามี form หรือ data layer)
+
+---
+
+## ฟีเจอร์หลัก
+
+- โครงสร้างเว็บสมัยใหม่ โหลดเร็ว
+- Responsive รองรับมือถือ แท็บเล็ต และเดสก์ท็อป
+- ใช้ component-based design แก้ไขง่าย
+- พร้อมต่อ backend หรือ database เพิ่มในอนาคต
+
+---
+
+## โครงสร้างโปรเจกต์ (โดยสรุป)
+
+```txt
+src/
+├─ routes/          # หน้าเว็บ (SvelteKit routing)
+├─ lib/
+│  ├─ components/   # reusable components
+│  └─ styles/       # global styles
+├─ app.html
+└─ app.css
 ```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
