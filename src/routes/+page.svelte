@@ -1,12 +1,13 @@
 <script>
-import { getPosts } from '$lib/api.remote';
 import { page } from '$app/state';
+import { getFileUrl, getPosts } from '$lib/pb.remote';
 
 const navItems = [
     { title: 'Home', href: '/' },
     { title: 'About', href: '/about' },
     { title: 'Blog', href: '/blog' }
 ];
+const { items: posts, ...paginate } = await getPosts();
 </script>
 
 <div class="border-b border-base-content/10 py-2 text-center">
@@ -140,19 +141,26 @@ const navItems = [
     <div class="container mx-auto">
         <div class="flex items-baseline justify-between">
             <h2>All Posts</h2>
-            <a
-                target="_blank"
-                href="https://dash.cloudflare.com/a2066c72b45c4f070d95a9af1c3d56a7/workers/d1/databases/48e75fb2-5264-4ff7-8a2a-5c5b1b579fc0/studio"
-                class="link text-sm text-base-content/70">Edit</a
-            >
+            <a target="_blank" href="/_" class="link text-sm text-base-content/70">Edit</a>
         </div>
 
         <section class="mt-2 space-y-2">
-            {#each [await getPosts(), await getPosts(), await getPosts()].flat() as post}
+            {#each [posts, posts, posts].flat() as post}
                 <div class="rounded-none border border-base-300 p-4">
                     <div class="font-bold">{post.id}. {post.title}</div>
-                    <div class="text-xs">{post.content}</div>
-                    <div class="text-xs opacity-70">{post.created_at}</div>
+                    <div class="prose text-xs">{@html post.content}</div>
+                    <div class="text-xs opacity-70">{post.created}</div>
+                    {#if post.audio}
+                        {@const audio_url = await getFileUrl({
+                            collectionName: post.collectionName,
+                            id: post.id,
+                            filename: post.audio
+                        })}
+                        <div class="prose text-xs">
+                            <a href={audio_url} class="link">{audio_url} </a>
+                            <audio src={audio_url} controls></audio>
+                        </div>
+                    {/if}
                 </div>
             {/each}
         </section>
