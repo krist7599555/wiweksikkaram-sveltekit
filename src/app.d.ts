@@ -10,7 +10,9 @@ declare global {
         }
 
         // interface Error {}
-        // interface Locals {}
+        interface Locals {
+            pb: import('./lib/pocketbase/pb_types').TypedPocketBase;
+        }
         // interface PageData {}
         // interface PageState {}
         // interface Platform {}
