@@ -1,6 +1,7 @@
 <script>
 import { page } from '$app/state';
-import { getFileUrl, getPosts } from '$lib/pb.remote';
+import { getPosts } from '$lib/pb.remote';
+import { getFileUrl } from '$lib/pocketbase/pb_file_url';
 
 const navItems = [
     { title: 'Home', href: '/' },
@@ -151,11 +152,7 @@ const { items: posts, ...paginate } = await getPosts();
                     <div class="prose text-xs">{@html post.content}</div>
                     <div class="text-xs opacity-70">{post.created}</div>
                     {#if post.audio}
-                        {@const audio_url = await getFileUrl({
-                            collectionName: post.collectionName,
-                            id: post.id,
-                            filename: post.audio
-                        })}
+                        {@const audio_url = getFileUrl(post, post.audio)}
                         <div class="prose text-xs">
                             <a href={audio_url} class="link">{audio_url} </a>
                             <audio src={audio_url} controls></audio>
