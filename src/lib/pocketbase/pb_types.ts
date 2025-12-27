@@ -11,7 +11,6 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
-	PostTags = "post_tags",
 	Posts = "posts",
 	Tags = "tags",
 	Users = "users",
@@ -95,20 +94,13 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
-export type PostTagsRecord = {
-	created: IsoAutoDateString
-	id: string
-	post: RecordIdString
-	tag: RecordIdString
-	updated: IsoAutoDateString
-}
-
 export type PostsRecord = {
 	audio?: FileNameString
 	content?: HTMLString
 	created: IsoAutoDateString
 	id: string
 	published?: IsoDateString
+	tags?: RecordIdString[]
 	title?: string
 	updated: IsoAutoDateString
 	youtube_link?: string
@@ -140,7 +132,6 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
-export type PostTagsResponse<Texpand = unknown> = Required<PostTagsRecord> & BaseSystemFields<Texpand>
 export type PostsResponse<Texpand = unknown> = Required<PostsRecord> & BaseSystemFields<Texpand>
 export type TagsResponse<Texpand = unknown> = Required<TagsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
@@ -153,7 +144,6 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
-	post_tags: PostTagsRecord
 	posts: PostsRecord
 	tags: TagsRecord
 	users: UsersRecord
@@ -165,7 +155,6 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
-	post_tags: PostTagsResponse
 	posts: PostsResponse
 	tags: TagsResponse
 	users: UsersResponse
