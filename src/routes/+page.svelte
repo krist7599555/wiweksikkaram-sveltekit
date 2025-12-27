@@ -2,7 +2,8 @@
 import { page } from '$app/state';
 import { getPosts } from '$lib/pb.remote';
 import { getFileUrl } from '$lib/pocketbase/pb_file_url';
-
+import hero_image from '$lib/assets/images/002.jpg';
+import profile_image from '$lib/assets/images/ajarn.jpg';
 const navItems = [
     { title: 'Home', href: '/' },
     { title: 'About', href: '/about' },
@@ -10,6 +11,57 @@ const navItems = [
 ];
 const { items: posts, ...paginate } = await getPosts();
 </script>
+
+<div class="relative text-[2.5vw]">
+    <img class="aspect-6/3 w-full object-cover object-[50%_80%]" src={hero_image} alt="" />
+    <div class="absolute top-[20%] left-[15%] text-white">
+        <div class="mb-[-0.3em] text-[0.5em] font-light">สถานปฏิบัติธรรม</div>
+        <div class="text-[1.5em] font-bold">วิเวกสิกขาราม</div>
+        <div class="text-[0.5em] font-light">อำเภอพล จังหวัดขอนแก่น</div>
+        <div class="text-[0.5em] font-light">ถวายผ้าป่าทุกวันอาทิตย์ 13:00</div>
+    </div>
+</div>
+
+<div class="mx-auto flex max-w-[64rem] px-6">
+    <aside class="w-78">
+        <div class="relative">
+            <img
+                src={profile_image}
+                class="relative -mt-25 size-50 rounded-full border-10 border-white"
+                alt=""
+            />
+            <div
+                class="absolute top-14 left-full w-90 overflow-visible text-2xl font-bold text-white"
+            >
+                พระอาจารย์วิชัย กัมมสุทโธ
+            </div>
+        </div>
+        <ul>
+            <li>About</li>
+            <li>Contact</li>
+            <li>Audio</li>
+            <li>Book</li>
+        </ul>
+    </aside>
+    <div class="w-full">
+        <div class="pt-8">
+            {#each posts as post}
+                <section>
+                    <dir class="text-2xl font-bold">{post.title}</dir>
+                    <dir class="text-xs">
+                        {new Date(post.published).toLocaleDateString('th', { dateStyle: 'long' })}
+                    </dir>
+                    <dir>
+                        {post.tags}
+                    </dir>
+                    <div class="mt-4">
+                        {@html post.content}
+                    </div>
+                </section>
+            {/each}
+        </div>
+    </div>
+</div>
 
 <div class="border-b border-base-content/10 py-2 text-center">
     <div class="font-bold">วิเวกสิกขาราม</div>

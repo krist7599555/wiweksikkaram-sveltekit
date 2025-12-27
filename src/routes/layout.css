@@ -1,3 +1,5 @@
+/* @import '@fontsource-variable/noto-serif-thai'; */
+@import '@fontsource-variable/noto-serif-thai/wdth.css';
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
@@ -31,6 +33,9 @@
     }
     table {
         @apply table;
+    }
+    :root {
+        font-family: 'Noto Serif Thai Variable', serif;
     }
 }
 
