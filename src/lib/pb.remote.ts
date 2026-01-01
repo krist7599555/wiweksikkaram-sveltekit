@@ -1,11 +1,15 @@
 import { query } from '$app/server';
 import { pb } from './pocketbase';
 import * as v from 'valibot';
+import type { PostsResponse, TagsRecord } from './pocketbase/pb_types';
 
 export const getPosts = query(async () => {
-    return await pb().collection('posts').getList(1, 50, {
-        // filter: 'someField1 != someField2'
-    });
+    return await pb()
+        .collection('posts')
+        .getList<PostsResponse & { expand: { tags: TagsRecord[] } }>(1, 50, {
+            sort: '-published',
+            expand: 'tags'
+        });
 });
 export const getFileUrl = query(
     v.object({

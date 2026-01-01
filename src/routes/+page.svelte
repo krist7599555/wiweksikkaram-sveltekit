@@ -1,16 +1,38 @@
-<script>
+<script lang="ts">
 import { page } from '$app/state';
 import { getPosts } from '$lib/pb.remote';
-import { getFileUrl } from '$lib/pocketbase/pb_file_url';
 import hero_image from '$lib/assets/images/002.jpg';
 import profile_image from '$lib/assets/images/ajarn.jpg';
+import { AudioPlayer } from 'svelte-mp3';
+import { browser } from '$app/environment';
 const navItems = [
     { title: 'Home', href: '/' },
     { title: 'About', href: '/about' },
     { title: 'Blog', href: '/blog' }
 ];
 const { items: posts, ...paginate } = await getPosts();
+let active_post = $state<(typeof posts)[number]>();
 </script>
+
+{#if browser && active_post && active_post.audio_link}
+    <div
+        class="fixed right-0 bottom-0 left-0 z-50 bg-base-200 px-6 pt-8 pb-6 [&_input.trackslider]:cursor-pointer"
+    >
+        <AudioPlayer
+            class="**:[[name=repeat]]:hidden"
+            color="black"
+            disableVolSlider
+            enableMediaSession={false}
+            showTrackNum={false}
+            progressForeground="#ff981a"
+            showShuffle={false}
+            showVolume={false}
+            showPrev={false}
+            showNext={false}
+            urls={[active_post.audio_link]}
+        />
+    </div>
+{/if}
 
 <div class="relative text-[2.5vw]">
     <img class="aspect-6/3 w-full object-cover object-[50%_80%]" src={hero_image} alt="" />
@@ -45,22 +67,47 @@ const { items: posts, ...paginate } = await getPosts();
     </aside>
     <div class="w-full">
         <div class="pt-8">
-            <audio
-                preload="metadata"
-                src="https://mcdn.podbean.com/mf/web/6tsef6/d_clips_f2b74797-abdb-45e2-9a0e-a6c9007500ee_c26ffd44-9e74-40fa-968d-a6c900d56bd8_e0e5d556-a5f2-45d4-bed5-a72000f2e136_audio.mp3"
-                controls
-            ></audio>
             {#each posts as post}
-                <section>
-                    <dir class="text-2xl font-bold">{post.title}</dir>
-                    <dir class="text-xs">
-                        {new Date(post.published).toLocaleDateString('th', { dateStyle: 'long' })}
-                    </dir>
-                    <dir>
-                        {post.tags}
-                    </dir>
-                    <div class="mt-4">
-                        {@html post.content}
+                {@const is_active = post.id === active_post?.id}
+                <section
+                    class="mt-0 flex items-start justify-start gap-5 border-b border-base-300 bg-white pt-7 pb-5 {is_active
+                        ? 'sticky top-0 z-20'
+                        : ''}"
+                >
+                    <div>
+                        <button
+                            onclick={() => (active_post = post)}
+                            class="btn size-15 rounded-full {is_active
+                                ? 'btn-accent'
+                                : 'btn-primary'}">Play</button
+                        >
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <div class=" font-bold">
+                            {post.title}
+                            {#if post.audio_duration}
+                                {@const hour = Math.floor(post.audio_duration / 3600)}
+                                {@const minute = Math.floor(post.audio_duration / 60) % 60}
+                                <span class="badge badge-soft badge-xs font-medium badge-primary">
+                                    {hour}:{('' + minute).padStart(2, '0')}
+                                </span>
+                            {/if}
+                        </div>
+                        <div class="text-xs opacity-40">
+                            {new Date(post.published || '').toLocaleDateString('th', {
+                                dateStyle: 'long'
+                            })}
+
+                            {post.location ? '- ' + post.location : ''}
+                            {post.event ? '- ' + post.event : ''}
+                        </div>
+                        <div>
+                            {#each post.expand.tags as tag}
+                                <span class="badge badge-soft badge-xs badge-accent"
+                                    >{tag.name}</span
+                                >
+                            {/each}
+                        </div>
                     </div>
                 </section>
             {/each}
@@ -208,11 +255,10 @@ const { items: posts, ...paginate } = await getPosts();
                     <div class="font-bold">{post.id}. {post.title}</div>
                     <div class="prose text-xs">{@html post.content}</div>
                     <div class="text-xs opacity-70">{post.created}</div>
-                    {#if post.audio}
-                        {@const audio_url = getFileUrl(post, post.audio)}
+                    {#if post.audio_link}
                         <div class="prose text-xs">
-                            <a href={audio_url} class="link">{audio_url} </a>
-                            <audio src={audio_url} controls></audio>
+                            <a href={post.audio_link} class="link">{post.audio_link}</a>
+                            <audio src={post.audio_link} controls></audio>
                         </div>
                     {/if}
                 </div>
