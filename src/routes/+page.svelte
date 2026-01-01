@@ -45,6 +45,11 @@ const { items: posts, ...paginate } = await getPosts();
     </aside>
     <div class="w-full">
         <div class="pt-8">
+            <audio
+                preload="metadata"
+                src="https://mcdn.podbean.com/mf/web/6tsef6/d_clips_f2b74797-abdb-45e2-9a0e-a6c9007500ee_c26ffd44-9e74-40fa-968d-a6c900d56bd8_e0e5d556-a5f2-45d4-bed5-a72000f2e136_audio.mp3"
+                controls
+            ></audio>
             {#each posts as post}
                 <section>
                     <dir class="text-2xl font-bold">{post.title}</dir>

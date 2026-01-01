@@ -1,5 +1,5 @@
 import { query } from '$app/server';
-import { pb } from './pocketbase/pb';
+import { pb } from './pocketbase';
 import * as v from 'valibot';
 
 export const getPosts = query(async () => {

@@ -7,6 +7,7 @@ import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import ts from 'typescript-eslint';
 import svelteConfig from './svelte.config.js';
+import civetPlugin from 'eslint-plugin-civet/ts';
 
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
@@ -15,6 +16,8 @@ export default defineConfig(
     js.configs.recommended,
     ...ts.configs.recommended,
     ...svelte.configs.recommended,
+    ...civetPlugin.configs.jsRecommended,
+    ...civetPlugin.configs.strict,
     prettier,
     ...svelte.configs.prettier,
     {

@@ -1,0 +1,101 @@
+import * as v from 'valibot';
+import * as rmd from 'remeda';
+import * as Toml from 'smol-toml';
+import { loadEnv } from 'vite';
+import Pocketbase from 'pocketbase';
+
+import type { CollectionResponses, Create, TypedPocketBase } from '$lib/pocketbase/pb_types';
+import { load_rss_feed } from '../data/podbean/load';
+
+import { lucas_hash } from '../src/lib/lucas_hash';
+
+env := 
+    process.cwd()
+    |> loadEnv('production', ., '')
+    |> v.parse v.object(
+            PB_URL: v.string(),
+            PB_TYPEGEN_USERNAME: v.string(),
+            PB_TYPEGEN_PASSWORD: v.string()
+        ), .
+
+podbean_records := load_rss_feed() |> await |> .items
+manual_records := 
+    Bun.file(`${import.meta.dir}/manual.toml`).text()
+    |> await
+    |> Toml.parse .
+    |> v.parse v.object(
+        items: v.array v.object
+            podbean_id: v.string(),
+            podbean_title: v.string(),
+            attribute: v.record(v.string(), v.string()),
+            published: v.pipe(v.string(), v.regex(/^20\d\d-\d{2}-\d{2}$/)),
+            title: v.string(),
+            location: v.string(),
+            event: v.string(),
+            tags: v.array(v.string())
+        ), .
+    |> .items
+
+
+table := podbean_records.map (podbean) =>
+    manual := manual_records.find(&.podbean_id == podbean.id)
+    throw new Error(`manual not found podbean_key ${podbean.id}`) if !manual
+    return
+        id: manual.published + '-' + lucas_hash(podbean.id, 4),
+        podbean_id: podbean.id,
+        manual: manual,
+        podbean: podbean
+
+pb := new Pocketbase(env.PB_URL) as App.TypedPocketBase
+pb.autoCancellation(false)
+pb.collection('_superusers').authWithPassword(env.PB_TYPEGEN_USERNAME, env.PB_TYPEGEN_PASSWORD) |> await
+    
+
+upsert := async <T extends 'tags' | 'posts'>(
+    pb: TypedPocketBase,
+    col: T,
+    search_key: keyof Create<T> & string,
+    data: Create<T>
+): Promise<CollectionResponses[T]> =>
+    c := pb.collection(col)
+    try
+        existing := await c.getFirstListItem(`${search_key} = "${data[search_key]}"`);
+        return await c.update(existing.id, data)
+    catch (err: any)
+        return await c.create(data) if err?.status === 404
+        throw err;
+    
+
+tagname_tags := table
+    |> .flatMap(&.manual.tags)
+    |> rmd.unique
+    |> .map upsert(pb, 'tags', 'name', { name: . })
+    |> await.all
+    |> rmd.mapToObj(., [&.name, &])
+
+
+_ := await.all
+    for rec of table
+        upsert pb, 'posts', 'id',
+            id: rec.id,
+
+            audio_duration: rec.podbean.itunes_duration
+            audio_link: rec.podbean.enclosures[0].url
+            podbean: rec.podbean
+            podbean_id: rec.podbean.id
+            podbean_title: rec.podbean.title
+
+            event: rec.manual.event
+            location: rec.manual.location
+            title: rec.manual.title
+            published: rec.manual.published
+            time: rec.manual.attribute.time || undefined
+            attribute: rmd.omit(rec.manual.attribute, ['time'])
+            tags: rec.manual.tags.map tagname_tags[&].id
+
+            content: '',
+            youtube_link: ''
+
+
+console.log(_.length);
+console.log('DONE');
