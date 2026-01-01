@@ -3,6 +3,7 @@ import * as rmd from 'remeda';
 import * as Toml from 'smol-toml';
 import { loadEnv } from 'vite';
 import Pocketbase from 'pocketbase';
+import { invariant } from 'es-toolkit'
 
 import type { CollectionResponses, Create, TypedPocketBase } from '$lib/pocketbase/pb_types';
 import { load_rss_feed } from '../data/podbean/load';
@@ -39,7 +40,7 @@ manual_records :=
 
 table := podbean_records.map (podbean) =>
     manual := manual_records.find(&.podbean_id == podbean.id)
-    throw new Error(`manual not found podbean_key ${podbean.id}`) if !manual
+    invariant(manual, `manual not found podbean_key ${podbean.id}`)
     return
         id: manual.published + '-' + lucas_hash(podbean.id, 4),
         podbean_id: podbean.id,
