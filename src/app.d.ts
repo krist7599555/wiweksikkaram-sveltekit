@@ -17,7 +17,7 @@ declare global {
         // interface PageState {}
         // interface Platform {}
 
-        type TypedPocketBase = import('./lib/pocketbase/pb_types').TypedPocketBase;
+        type PocketBase = import('./lib/pocketbase/pb_types').TypedPocketBase;
     }
 }
 

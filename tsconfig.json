@@ -11,6 +11,10 @@
         "sourceMap": true,
         "strict": true,
         "moduleResolution": "bundler",
-        "types": ["worker-configuration.d.ts", "@types/bun"]
+        "types": [
+            "worker-configuration.d.ts",
+            "@types/bun",
+            "@poppanator/sveltekit-svg/dist/svg.d.ts"
+        ]
     }
 }
